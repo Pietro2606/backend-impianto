@@ -1,49 +1,31 @@
-import express from 'express';
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+const express = require("express");
+const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// 🔄 Recupera gli ultimi eventi
-app.get('/api/eventi-recenti', async (req, res) => {
+// Rotta di benvenuto
+app.get("/", (req, res) => {
+  res.send("✅ sito in costruzione");
+});
+
+// Esempio di rotta API (da personalizzare)
+app.get("/impianti", async (req, res) => {
   try {
-    const eventi = await prisma.eventoImpianto.findMany({
-      orderBy: { orario: 'desc' },
-      take: 10,
-    });
-    res.json(eventi);
-  } catch (err) {
-    console.error('Errore nel recupero degli eventi:', err);
-    res.status(500).json({ errore: 'Errore del server' });
+    const impianti = await prisma.impianto.findMany();
+    res.json(impianti);
+  } catch (error) {
+    res.status(500).json({ error: "Errore nel recupero degli impianti." });
   }
 });
 
-// 🚀 Invia un nuovo comando
-app.post('/api/comando', async (req, res) => {
-  const { tipo, valore, impiantoId } = req.body;
-  try {
-    const evento = await prisma.eventoImpianto.create({
-      data: {
-        tipo,
-        valore,
-        impiantoId,
-        orario: new Date(),
-      },
-    });
-    res.json(evento);
-  } catch (err) {
-    console.error('Errore nella creazione del comando:', err);
-    res.status(500).json({ errore: 'Errore del server' });
-  }
-});
-
-// 🟢 Avvio server
+// Avvio del server
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚀 Backend in ascolto su http://localhost:${PORT}`);
 });
