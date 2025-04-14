@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Endpoint: eventi recenti
+// 🔄 Recupera gli ultimi eventi
 app.get('/api/eventi-recenti', async (req, res) => {
   try {
     const eventi = await prisma.eventoImpianto.findMany({
@@ -19,12 +19,12 @@ app.get('/api/eventi-recenti', async (req, res) => {
     });
     res.json(eventi);
   } catch (err) {
-    console.error('Errore durante il recupero degli eventi:', err);
-    res.status(500).json({ errore: 'Errore nel server' });
+    console.error('Errore nel recupero degli eventi:', err);
+    res.status(500).json({ errore: 'Errore del server' });
   }
 });
 
-// Endpoint: comando da dashboard
+// 🚀 Invia un nuovo comando
 app.post('/api/comando', async (req, res) => {
   const { tipo, valore, impiantoId } = req.body;
   try {
@@ -38,12 +38,12 @@ app.post('/api/comando', async (req, res) => {
     });
     res.json(evento);
   } catch (err) {
-    console.error('Errore durante l’invio del comando:', err);
-    res.status(500).json({ errore: 'Errore nel server' });
+    console.error('Errore nella creazione del comando:', err);
+    res.status(500).json({ errore: 'Errore del server' });
   }
 });
 
-// Avvio server
+// 🟢 Avvio server
 app.listen(PORT, () => {
   console.log(`🚀 Backend in ascolto su http://localhost:${PORT}`);
 });
